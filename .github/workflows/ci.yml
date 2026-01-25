@@ -30,3 +30,9 @@ jobs:
 
       - name: Run YSH tests
         run: docker run --rm oils-test:latest ysh /scripts/test-ysh.ysh
+
+      - name: Run OSH features demo
+        run: docker run --rm oils-test:latest osh /scripts/features-osh.sh
+
+      - name: Run YSH features demo
+        run: docker run --rm oils-test:latest ysh /scripts/features-ysh.ysh

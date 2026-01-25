@@ -1,0 +1,388 @@
+#!/usr/bin/env ysh
+# =============================================================================
+# YSH の特徴的な機能デモ
+# YSH Features Demo - シェルの新しい形
+# =============================================================================
+#
+# YSH は Python/JavaScript ユーザー向けのモダンなシェル言語です
+# シェル + Python + Regex + JSON + YAML を統合した「究極のグルー言語」
+#
+# 主な特徴:
+# 1. Eggex - 読みやすい正規表現
+# 2. JSON/J8 Notation サポート
+# 3. proc (副作用用) と func (純粋関数) の区別
+# 4. 型付きデータ構造 (List, Dict, Bool, Int, Float)
+# 5. 式言語 (Expression Language)
+# 6. 文字列メソッド
+# 7. case文でのパターンマッチ
+# 8. 静的パース (OSHと同じパーサー基盤を共有)
+#
+# 注: OSH と YSH は同じ oils-for-unix バイナリから提供され、
+#     同じパーサーを共有しています。違いは shopt オプションのみです。
+
+echo "=== YSH Features Demo ==="
+echo ""
+
+# =============================================================================
+# 1. 変数宣言 - var, const, setvar
+# =============================================================================
+echo "1. 変数宣言 (var, const, setvar)"
+echo "   Bash: local/readonly - ビルトインコマンド"
+echo "   YSH:  var/const - 言語キーワード"
+echo ""
+
+const PI = 3.14159
+var radius = 5
+var area = PI * radius * radius
+
+echo "   const PI = $PI"
+echo "   var radius = $radius"
+echo "   var area = PI * radius * radius = $area"
+
+# setvar で変数を更新
+setvar radius = 10
+setvar area = PI * radius * radius
+echo "   setvar radius = $radius"
+echo "   Updated area = $area"
+
+# =============================================================================
+# 2. 型付きデータ構造
+# =============================================================================
+echo ""
+echo "2. 型付きデータ構造 (List, Dict)"
+echo "   Python/JavaScript ライクな構文"
+echo ""
+
+# List (配列)
+var fruits = ['apple', 'banana', 'cherry', 'date']
+echo "   List: $[join(fruits, ', ')]"
+echo "   Length: $[len(fruits)]"
+echo "   First: $[fruits[0]]"
+echo "   Last: $[fruits[-1]]"
+
+# Slice
+var first_two = fruits[0:2]
+echo "   Slice [0:2]: $[join(first_two, ', ')]"
+
+# Dict (辞書)
+var person = {
+    name: 'Taro',
+    age: 25,
+    city: 'Tokyo',
+    languages: ['Japanese', 'English', 'Python']
+}
+
+echo ""
+echo "   Dict: person"
+echo "     name: $[person.name]"
+echo "     age: $[person.age]"
+echo "     city: $[person.city]"
+echo "     languages: $[join(person.languages, ', ')]"
+
+# =============================================================================
+# 3. Eggex - 読みやすい正規表現
+# =============================================================================
+echo ""
+echo "3. Eggex - Readable Regular Expressions"
+echo "   従来の正規表現: ^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$"
+echo "   Eggex: / D '.' D '.' D '.' D / where D = /digit{1,3}/"
+echo ""
+
+# Eggex でIPアドレスパターンを定義
+var D = / digit{1,3} /
+var ip_pattern = / %start @D '.' @D '.' @D '.' @D %end /
+
+var test_ips = ['192.168.1.1', '10.0.0.1', 'not.an.ip', '999.999.999.999', 'hello']
+
+echo "   IPアドレスパターンテスト:"
+for ip in (test_ips) {
+    if (ip ~ ip_pattern) {
+        echo "     '$ip' - Match!"
+    } else {
+        echo "     '$ip' - No match"
+    }
+}
+
+# メールアドレス風パターン
+echo ""
+var word_char = / [a-zA-Z0-9_] /
+var email_pattern = / @word_char+ '@' @word_char+ '.' @word_char+ /
+
+var test_emails = ['user@example.com', 'test@test.org', 'invalid', 'no@at']
+
+echo "   メールパターンテスト:"
+for email in (test_emails) {
+    if (email ~ email_pattern) {
+        echo "     '$email' - Match!"
+    } else {
+        echo "     '$email' - No match"
+    }
+}
+
+# =============================================================================
+# 4. proc と func の区別
+# =============================================================================
+echo ""
+echo "4. proc (副作用用) と func (純粋関数)"
+echo "   proc: シェルコマンドのラッパー、副作用を持つ"
+echo "   func: 純粋関数、値を返す"
+echo ""
+
+# proc - 副作用（出力など）を持つ処理
+proc greet (name, times) {
+    for i in (0 .. times) {
+        echo "   Hello, $name! (回数: $[i + 1])"
+    }
+}
+
+echo "   proc greet の呼び出し:"
+greet 'YSH' 3
+
+# func - 純粋関数、計算して値を返す
+func add(x, y) {
+    return (x + y)
+}
+
+func multiply(x, y) {
+    return (x * y)
+}
+
+func factorial(n) {
+    if (n <= 1) {
+        return (1)
+    }
+    return (n * factorial(n - 1))
+}
+
+echo ""
+echo "   func の呼び出し:"
+echo "     add(10, 20) = $[add(10, 20)]"
+echo "     multiply(6, 7) = $[multiply(6, 7)]"
+echo "     factorial(5) = $[factorial(5)]"
+
+# =============================================================================
+# 5. 式言語 (Expression Language)
+# =============================================================================
+echo ""
+echo "5. 式言語 (Expression Language)"
+echo "   \$[...] で式を評価"
+echo ""
+
+var x = 10
+var y = 3
+
+echo "   x = $x, y = $y"
+echo "   x + y = $[x + y]"
+echo "   x - y = $[x - y]"
+echo "   x * y = $[x * y]"
+echo "   x / y = $[x / y]"        # 浮動小数点除算
+echo "   x // y = $[x // y]"      # 整数除算
+echo "   x % y = $[x % y]"        # 剰余
+echo "   x ** 2 = $[x ** 2]"      # 累乗
+
+# 比較演算子
+echo ""
+echo "   比較演算子:"
+echo "   x > y: $[x > y]"
+echo "   x === 10: $[x === 10]"
+echo "   x !== y: $[x !== y]"
+
+# 論理演算子
+var a = true
+var b = false
+echo ""
+echo "   論理演算子 (a=true, b=false):"
+echo "   a and b: $[a and b]"
+echo "   a or b: $[a or b]"
+echo "   not b: $[not b]"
+
+# =============================================================================
+# 6. 文字列メソッド
+# =============================================================================
+echo ""
+echo "6. 文字列メソッド"
+echo ""
+
+var text = '  Hello, YSH World!  '
+echo "   Original: '$text'"
+echo "   trim(): '$[text.trim()]'"
+echo "   upper(): '$[text.upper()]'"
+echo "   lower(): '$[text.lower()]'"
+
+var sentence = 'apple,banana,cherry'
+var items = sentence.split(',')
+echo ""
+echo "   split(',') on '$sentence':"
+for item in (items) {
+    echo "     - $item"
+}
+
+# startswith, endswith
+var filename = 'document.pdf'
+echo ""
+echo "   '$filename'.startsWith('doc'): $[filename.startsWith('doc')]"
+echo "   '$filename'.endsWith('.pdf'): $[filename.endsWith('.pdf')]"
+
+# =============================================================================
+# 7. JSON サポート
+# =============================================================================
+echo ""
+echo "7. JSON サポート"
+echo "   YSH は JSON をネイティブにサポート"
+echo ""
+
+var data = {
+    name: 'Test Project',
+    version: '1.0.0',
+    features: ['json', 'eggex', 'typed-data'],
+    active: true,
+    count: 42
+}
+
+echo "   Dict -> JSON:"
+echo "   $[toJson(data)]"
+
+echo ""
+echo "   Pretty JSON (json write):"
+json write (data)
+
+# JSON 文字列からの読み込み
+var json_str = '{"language": "YSH", "year": 2024}'
+var parsed = fromJson(json_str)
+echo ""
+echo "   JSON -> Dict:"
+echo "   Parsed language: $[parsed.language]"
+echo "   Parsed year: $[parsed.year]"
+
+# =============================================================================
+# 8. case 文とパターンマッチ
+# =============================================================================
+echo ""
+echo "8. case 文とパターンマッチ"
+echo ""
+
+proc check_file_type (filename) {
+    case (filename) {
+        *.py   { echo "     $filename: Python file" }
+        *.js   { echo "     $filename: JavaScript file" }
+        *.sh   { echo "     $filename: Shell script" }
+        *.ysh  { echo "     $filename: YSH script" }
+        *      { echo "     $filename: Unknown type" }
+    }
+}
+
+echo "   ファイルタイプ判定 (glob pattern):"
+check_file_type 'app.py'
+check_file_type 'index.js'
+check_file_type 'build.sh'
+check_file_type 'feature.ysh'
+check_file_type 'data.txt'
+
+# Eggex での case
+echo ""
+echo "   数値パターン判定 (Eggex):"
+
+proc check_number (s) {
+    case (s) {
+        / digit+ / { echo "     '$s': Integer" }
+        / digit+ '.' digit+ / { echo "     '$s': Float" }
+        * { echo "     '$s': Not a number" }
+    }
+}
+
+check_number '123'
+check_number '3.14'
+check_number 'hello'
+
+# =============================================================================
+# 9. for ループのバリエーション
+# =============================================================================
+echo ""
+echo "9. for ループのバリエーション"
+echo ""
+
+echo "   Range: 0 .. 5"
+for i in (0 .. 5) {
+    echo "     i = $i"
+}
+
+echo ""
+echo "   Dict のイテレーション:"
+var scores = {math: 90, english: 85, science: 95}
+for key, value in (scores) {
+    echo "     $key: $value"
+}
+
+echo ""
+echo "   List with index:"
+var colors = ['red', 'green', 'blue']
+for i, color in (colors) {
+    echo "     [$i]: $color"
+}
+
+# =============================================================================
+# 10. エラーハンドリング
+# =============================================================================
+echo ""
+echo "10. エラーハンドリング (try/catch スタイル)"
+echo "    YSH はデフォルトでエラーを止めます"
+echo ""
+
+# try で失敗を捕捉
+try {
+    echo "     Trying: false command"
+    false  # 失敗するコマンド
+}
+if (_status !== 0) {
+    echo "     Caught error! Status: $_status"
+}
+
+echo "     Script continues after error handling"
+
+# =============================================================================
+# 11. 静的パース (OSH と共通)
+# =============================================================================
+echo ""
+echo "11. 静的パース (Static Parsing)"
+echo "    YSH は OSH と同じパーサー基盤を共有しています"
+echo ""
+
+# YSH も OSH も同じ oils-for-unix バイナリから提供される
+# 違いは shopt オプションの設定のみ
+#
+# 静的パースの利点:
+# - スクリプト全体を事前に単一パスでパース
+# - 実行されないコードブロック内のエラーも検出
+# - bash -n では検出できないエラーも発見可能
+#
+# 例: 以下のような構文エラーを事前に検出
+# if (false) {
+#     var x = [1, 2,    # 閉じ括弧がない
+# }
+#
+# 参考: OSH と YSH は shopt --set ysh:all で切り替わる
+#       https://oils.pub/release/latest/doc/options.html
+
+echo "   OSH/YSH の静的パースにより:"
+echo "   - スクリプト読み込み時に構文エラーを検出"
+echo "   - 実行されないブロック内のエラーも発見"
+echo "   - ロスレスパース: ツールによる解析・変換が可能"
+
+# =============================================================================
+# まとめ
+# =============================================================================
+echo ""
+echo "=== YSH の主な利点 ==="
+echo "1. Eggex: 読みやすく合成可能な正規表現"
+echo "2. 型付きデータ: List, Dict, Bool, Int, Float"
+echo "3. JSON ネイティブサポート"
+echo "4. proc/func: 副作用と純粋関数の明確な区別"
+echo "5. 式言語: Python/JS ライクな構文"
+echo "6. 文字列メソッド: .trim(), .upper(), .split() 等"
+echo "7. パターンマッチ: glob と Eggex 両対応"
+echo "8. 静的パース: OSH と同じパーサーで事前に全体をパース"
+echo "9. {} ブロック: then/fi, do/done が不要"
+echo "10. try/catch スタイルのエラーハンドリング"
+echo "11. OSH からの段階的移行が可能"
+echo ""
+echo "=== YSH Features Demo Complete ==="
