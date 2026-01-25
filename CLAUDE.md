@@ -1,7 +1,5 @@
 # CLAUDE.md
 
-このファイルは Claude Code がプロジェクトを理解するためのガイドです。
-
 ## プロジェクト概要
 
 Oils シェル（OSH/YSH）を Docker/Podman コンテナ環境で試験的に動作させるための実験用リポジトリです。
@@ -47,6 +45,19 @@ apk add libc-dev gcc readline-dev
 
 ## 参考リンク
 
-- [Oils GitHub](https://github.com/oils-for-unix/oils)
+### 公式
+
 - [Oils 公式サイト](https://oils.pub/)
+- [Oils GitHub](https://github.com/oils-for-unix/oils)
+- [YSH とは](https://oils.pub/ysh.html)
+
+### ドキュメント
+
 - [Installing Oils](https://www.oilshell.org/release/latest/doc/INSTALL.html)
+- [Getting Started](https://github.com/oils-for-unix/oils/blob/master/doc/getting-started.md)
+- [Oils 2023 FAQ](https://www.oilshell.org/blog/2023/03/faq.html)
+
+### 技術詳細
+
+- [OSH versus Oil (Wiki)](https://github.com/oils-for-unix/oils/wiki/OSH-versus-Oil)
+- [Reasons for the Big Renaming](https://www.oilshell.org/blog/2023/03/rename.html)
