@@ -37,6 +37,13 @@ my-playground-oil/
     └── test-ysh.ysh # YSH 動作確認用
 ```
 
+## 開発ルール
+
+### scripts 配下のスクリプト
+
+- 外部サーバーへのアクセスは禁止（curl, wget, fetch 等によるネットワーク通信を含めない）
+- 外部サービスへの意図しない影響を防ぐため
+
 ## ビルド依存関係（Alpine Linux）
 
 ```sh
