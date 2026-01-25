@@ -1,0 +1,74 @@
+#!/usr/bin/env ysh
+# YSH (Modern shell) test script
+
+echo "=== YSH Test Script ==="
+echo ""
+
+# 1. Basic echo
+echo "1. Basic output: Hello from YSH!"
+
+# 2. Variables with const and var
+const greeting = 'Hello'
+var name = 'YSH'
+echo "2. Variables: const greeting=$greeting, var name=$name"
+
+# 3. Arithmetic with expressions
+var a = 10
+var b = 3
+var sum = a + b
+var product = a * b
+echo "3. Arithmetic: $a + $b = $sum"
+echo "   $a * $b = $product"
+
+# 4. Lists (YSH style)
+var fruits = ['apple', 'banana', 'cherry']
+echo "4. List: $[join(fruits, ', ')]"
+echo "   Length: $[len(fruits)]"
+echo "   Second element: $[fruits[1]]"
+
+# 5. Dict (YSH style)
+var person = {
+  name: 'Alice',
+  age: 30
+}
+echo "5. Dict: name=$[person.name], age=$[person.age]"
+
+# 6. Conditional with expression syntax
+var num = 42
+if (num > 40) {
+  echo "6. Conditional: $num is greater than 40"
+} else {
+  echo "6. Conditional: $num is not greater than 40"
+}
+
+# 7. For loop with typed data
+echo "7. Loop (over list):"
+for item in (fruits) {
+  echo "   - $item"
+}
+
+# 8. While loop
+echo "8. While loop (count to 3):"
+var i = 1
+while (i <= 3) {
+  echo "   Count: $i"
+  setvar i += 1
+}
+
+# 9. Function (proc style - for side effects)
+proc greet (target) {
+  echo "   Hello, $target!"
+}
+echo "9. Proc (procedure):"
+greet 'World'
+greet 'YSH User'
+
+# 10. String methods
+var text = '  hello ysh  '
+var trimmed = text.trim()
+echo "10. String methods:"
+echo "    Original: '$text'"
+echo "    Trimmed: '$trimmed'"
+
+echo ""
+echo "=== YSH Test Complete ==="
