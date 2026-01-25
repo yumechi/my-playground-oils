@@ -129,8 +129,10 @@ echo "   func: 純粋関数、値を返す"
 echo ""
 
 # proc - 副作用（出力など）を持つ処理
+# 注: proc の引数は文字列として渡されるため、int() で変換が必要
 proc greet (name, times) {
-    for i in (0 .. times) {
+    var t = int(times)
+    for i in (0 .. t) {
         echo "   Hello, $name! (回数: $[i + 1])"
     }
 }
