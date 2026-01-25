@@ -32,7 +32,7 @@ RUN ./configure --prefix=/usr --datarootdir=/usr/share && \
 FROM alpine:3.19
 
 # Install runtime dependencies
-RUN apk add --no-cache readline
+RUN apk add --no-cache readline libstdc++ libgcc
 
 # Copy Oils binaries from builder
 COPY --from=builder /usr/bin/oils-for-unix /usr/bin/
