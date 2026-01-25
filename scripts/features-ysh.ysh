@@ -104,9 +104,9 @@ for ip in (test_ips) {
 }
 
 # メールアドレス風パターン
+# Eggex では word は [a-zA-Z0-9_] に相当する組み込みクラス
 echo ""
-var word_char = / [a-zA-Z0-9_] /
-var email_pattern = / @word_char+ '@' @word_char+ '.' @word_char+ /
+var email_pattern = / word+ '@' word+ '.' word+ /
 
 var test_emails = ['user@example.com', 'test@test.org', 'invalid', 'no@at']
 
