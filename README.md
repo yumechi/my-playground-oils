@@ -40,6 +40,18 @@ podman run --rm oils-shell osh /scripts/test-osh.sh
 podman run --rm oils-shell ysh /scripts/test-ysh.ysh
 ```
 
+### 5. 静的解析（構文チェック）
+
+`-n` オプションでスクリプトを実行せずに構文チェックができます。
+
+```sh
+# OSH スクリプトの構文チェック
+podman run --rm oils-shell osh -n /scripts/test-osh.sh
+
+# YSH スクリプトの構文チェック
+podman run --rm oils-shell ysh -n /scripts/test-ysh.ysh
+```
+
 ## OSH と YSH の違い
 
 | 項目 | OSH | YSH |
